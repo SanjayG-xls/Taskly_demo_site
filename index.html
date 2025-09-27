@@ -313,7 +313,14 @@
         
         /* --- Responsive Styles for Mobile --- */
         @media (max-width: 768px) {
+            html, body {
+                height: auto;
+                overflow: auto; /* Re-enable body scrolling */
+            }
+
             main {
+                height: auto;
+                overflow: visible;
                 scroll-snap-type: none; /* Disable snap scrolling on mobile for a more natural feel */
             }
 
@@ -344,7 +351,7 @@
                 max-width: 100%;
             }
 
-            #features .grid, #why-us .grid, #testimonials .grid {
+            #features .grid, #why-us .grid {
                 grid-template-columns: 1fr;
                 gap: 1.5rem;
                 margin-top: 3rem;
