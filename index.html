@@ -17,20 +17,46 @@
             --card-color-3-rgb: 255, 255, 255; /* White */
         }
 
-        html {
-            scroll-behavior: smooth;
+        html, body {
+            height: 100%;
+            overflow: hidden; /* Prevent body scroll, let main container handle it */
         }
 
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-light);
             color: var(--text-dark);
-            overflow-x: hidden;
             transition: background-color 0.3s ease;
         }
 
         body.side-panel-open {
             overflow: hidden;
+        }
+
+        main {
+            height: 100vh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+        }
+
+        section {
+            height: 100vh;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 4rem 20px; /* Consistent padding */
+        }
+
+        header {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        header.header-hidden {
+            transform: translateY(-100%);
         }
 
         #letter-rain-canvas {
@@ -42,69 +68,40 @@
             z-index: -1;
             opacity: 0.6;
         }
-
-        .hero-section {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            position: relative;
-            z-index: 10;
-            transition: opacity 0.7s ease-in-out, transform 0.7s ease-in-out;
-        }
-        
-        .hero-section h1 {
-            padding-bottom: 0.5rem; /* Fix for 'y' clipping */
-        }
-
-        .devices-section {
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            z-index: 5;
-            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
-            transform: scale(0.7); /* Initial zoomed-out state */
-            gap: 3rem;
-            flex-wrap: wrap;
-        }
-        
-        .features-section, .why-us-section, .testimonials-section, .enquire-section, .cta-section, .faq-section {
-            padding: 100px 0; /* Adjusted padding for full-width container */
-            position: relative;
-            z-index: 10;
-        }
         
         .section-content {
-            padding: 0 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
         }
 
-        /* Enhanced Scroll-based animations */
+        /* Animations triggered by Intersection Observer */
         .scroll-animate {
             opacity: 0;
             transform: translateY(50px) scale(0.95);
             transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
-        .scroll-animate.in-view {
+        section.in-view .scroll-animate {
             opacity: 1;
             transform: translateY(0) scale(1);
         }
         
+        /* Staggered animations */
+        section.in-view .scroll-animate.delay-1 { transition-delay: 100ms; }
+        section.in-view .scroll-animate.delay-2 { transition-delay: 200ms; }
+        section.in-view .scroll-animate.delay-3 { transition-delay: 300ms; }
+
         #mobile-mockup, #desktop-mockup {
             opacity: 0;
-            transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1) 0.3s;
-            background-color: #F9FAFB; /* Light gray background for mockups */
+            transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1) 0.5s;
         }
         
-        .devices-section.in-view #mobile-mockup {
+        section.in-view #mobile-mockup {
              opacity: 1;
              transform: translateX(0) rotate(0);
         }
-        .devices-section.in-view #desktop-mockup {
+        section.in-view #desktop-mockup {
              opacity: 1;
              transform: translateX(0) rotate(0);
         }
@@ -112,12 +109,12 @@
         #mobile-mockup {
             transform: translateX(-50px) rotate(-8deg);
             width: 100%;
-            max-width: 340px;
+            max-width: 400px;
         }
         #desktop-mockup {
             transform: translateX(50px) rotate(8deg);
             width: 100%;
-            max-width: 550px;
+            max-width: 680px;
         }
 
         .cta-button {
@@ -155,6 +152,7 @@
             backdrop-filter: blur(10px);
             border: 1px solid transparent;
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            text-align: left;
         }
         
         /* Applying color variants */
@@ -205,64 +203,45 @@
             box-shadow: 0 0 0 3px rgba(113, 90, 90, 0.3);
         }
         
-        /* --- Features Section Horizontal Scroll --- */
+        /* --- Horizontal Scroll Container --- */
         @keyframes scroll-horizontal {
-            from {
-                transform: translateX(0);
-            }
-            to {
-                transform: translateX(-50%);
-            }
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
         }
         
-        .features-container {
+        .scrolling-container {
             overflow: hidden;
-            -webkit-mask-image: linear-gradient(to right, transparent, white 20%, white 80%, transparent);
-            mask-image: linear-gradient(to right, transparent, white 20%, white 80%, transparent);
+            width: 100%;
+            -webkit-mask-image: linear-gradient(to right, transparent, white 10%, white 90%, transparent);
+            mask-image: linear-gradient(to right, transparent, white 10%, white 90%, transparent);
         }
 
-        .features-grid {
+        .scrolling-grid {
             display: flex;
             width: max-content;
-            animation: scroll-horizontal 40s linear infinite;
+        }
+        
+        section.in-view .scrolling-grid {
+             animation: scroll-horizontal 40s linear infinite;
         }
 
-        .features-container:hover .features-grid {
+        .scrolling-container:hover .scrolling-grid {
             animation-play-state: paused;
         }
 
-        .feature-card {
+        .testimonial-card {
             flex-shrink: 0;
-            width: 350px;
+            width: 450px;
             margin: 0 1rem;
-            cursor: pointer;
-        }
-
-        .feature-card:hover {
-            transform: scale(0.95);
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
-            border-color: var(--accent-brown);
-        }
-        
-        .feature-card.clicked {
-            transform: scale(1.1);
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.15);
-        }
-
-        /* Keep the card zoomed when hovered in a clicked state */
-        .feature-card.clicked:hover {
-            transform: scale(1.1);
         }
         
         /* --- Hero Graphics --- */
         #hero-graphics {
-            display: none; /* Hidden on mobile */
+            display: none;
         }
 
-        @media (min-width: 1024px) { /* Show only on desktop */
-            #hero-graphics {
-                display: block;
-            }
+        @media (min-width: 1024px) {
+            #hero-graphics { display: block; }
         }
 
         @keyframes float {
@@ -271,13 +250,9 @@
         }
 
         .graphic-icon {
-            position: absolute;
-            opacity: 0.15;
-            animation: float 8s ease-in-out infinite;
-            color: var(--text-medium);
-            will-change: transform;
+            position: absolute; opacity: 0.15; animation: float 8s ease-in-out infinite;
+            color: var(--text-medium); will-change: transform;
         }
-
         .icon-1 { top: 20%; left: 15%; width: 60px; animation-delay: 0s; }
         .icon-2 { top: 25%; right: 18%; width: 50px; animation-delay: -2s; transform: rotate(-15deg); }
         .icon-3 { bottom: 20%; left: 22%; width: 55px; animation-delay: -5s; }
@@ -285,72 +260,109 @@
 
         /* --- Side Panel --- */
         #page-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 90;
-            opacity: 0;
-            visibility: hidden;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); z-index: 90;
+            opacity: 0; visibility: hidden;
             transition: opacity 0.3s ease, visibility 0.3s ease;
         }
-
-        #page-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
+        #page-overlay.active { opacity: 1; visibility: visible; }
 
         #side-panel {
-            position: fixed;
-            top: 0;
-            right: -100%;
-            width: 320px;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(20px);
-            z-index: 100;
-            transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-            display: flex;
-            flex-direction: column;
-            padding: 2rem;
+            position: fixed; top: 0; right: -100%; width: 320px; height: 100%;
+            background-color: rgba(255, 255, 255, 0.8); backdrop-filter: blur(20px);
+            z-index: 100; transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            display: flex; flex-direction: column; padding: 2rem;
         }
-
-        #side-panel.active {
-            right: 0;
-        }
+        #side-panel.active { right: 0; }
 
         .side-panel-link {
-            position: relative;
-            padding: 0.75rem 1rem;
-            font-size: 1.25rem;
-            font-weight: 500;
-            border-radius: 0.5rem;
-            transition: color 0.3s ease, transform 0.3s ease;
-            overflow: hidden;
+            position: relative; padding: 0.75rem 1rem; font-size: 1.25rem; font-weight: 500;
+            border-radius: 0.5rem; transition: color 0.3s ease, transform 0.3s ease; overflow: hidden;
         }
-
         .side-panel-link::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
             transition: left 0.4s ease;
         }
-
-        .side-panel-link:hover {
-            color: var(--text-dark);
-            transform: translateX(5px);
+        .side-panel-link:hover { color: var(--text-dark); transform: translateX(5px); }
+        .side-panel-link:hover::before { left: 100%; }
+        
+        /* --- Scroll Down Indicator --- */
+        .scroll-indicator {
+            position: absolute; bottom: 40px; left: 50%;
+            transform: translateX(-50%); z-index: 11;
+            transition: opacity 0.4s ease;
         }
 
-        .side-panel-link:hover::before {
-            left: 100%;
+        .mouse {
+            width: 30px; height: 50px; border: 2px solid var(--text-dark);
+            border-radius: 60px; position: relative;
         }
 
+        .mouse-wheel {
+            position: absolute; top: 10px; left: 50%;
+            transform: translateX(-50%); width: 4px; height: 8px;
+            background-color: var(--text-dark); border-radius: 2px;
+            animation: scroll-wheel-anim 2s infinite;
+        }
+
+        @keyframes scroll-wheel-anim {
+            0% { opacity: 1; transform: translate(-50%, 0); }
+            100% { opacity: 0; transform: translate(-50%, 20px); }
+        }
+        
+        /* --- Responsive Styles for Mobile --- */
+        @media (max-width: 768px) {
+            main {
+                scroll-snap-type: none; /* Disable snap scrolling on mobile for a more natural feel */
+            }
+
+            section {
+                height: auto;
+                min-height: 100vh;
+                padding: 6rem 20px;
+            }
+
+            #hero h1 {
+                font-size: 3.5rem; /* 56px */
+            }
+            #hero p {
+                font-size: 1.125rem; /* 18px */
+            }
+            .section-content h2 {
+                font-size: 2.5rem; /* 40px */
+            }
+            
+            #devices .flex-wrap {
+                flex-direction: column;
+                gap: 2rem;
+                margin-top: 3rem;
+            }
+            
+            #mobile-mockup, #desktop-mockup {
+                transform: translate(0,0) rotate(0);
+                max-width: 100%;
+            }
+
+            #features .grid, #why-us .grid, #testimonials .grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                margin-top: 3rem;
+            }
+            
+            .scrolling-container {
+                -webkit-mask-image: none;
+                mask-image: none;
+            }
+
+            .testimonial-card {
+                width: 80vw;
+            }
+            
+            #enquire {
+                 min-height: auto;
+            }
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -364,7 +376,8 @@
             </div>
         </div>
         <div class="flex items-center space-x-8">
-            <nav class="hidden md:flex space-x-8 text-gray-600">
+            <nav id="main-nav" class="hidden md:flex space-x-8 text-gray-600">
+                <a href="#devices" class="hover:text-black transition-colors">Our App</a>
                 <a href="#features" class="hover:text-black transition-colors">Features</a>
                 <a href="#why-us" class="hover:text-black transition-colors">Why Us</a>
                 <a href="#testimonials" class="hover:text-black transition-colors">Testimonials</a>
@@ -386,394 +399,159 @@
                 </svg>
             </button>
         </div>
-        <nav class="flex flex-col space-y-4">
+        <nav id="side-nav" class="flex flex-col space-y-4">
+            <a href="#hero" class="side-panel-link">Home</a>
+            <a href="#devices" class="side-panel-link">Our App</a>
             <a href="#features" class="side-panel-link">Features</a>
             <a href="#why-us" class="side-panel-link">Why Us</a>
             <a href="#testimonials" class="side-panel-link">Testimonials</a>
-            <a href="#request-demo" class="side-panel-link">Request Demo</a>
-            <a href="#faq" class="side-panel-link">FAQ</a>
             <a href="#enquire" class="side-panel-link">Contact</a>
         </nav>
         <div class="mt-auto text-center">
             <h3 class="text-xl font-bold text-gray-800">Deep Pebble</h3>
             <p class="text-xs text-gray-500">Innovations Simplified</p>
             <div class="flex justify-center space-x-4 mt-4 text-gray-500">
-                 <a href="#" class="hover:text-black">
-                    <span class="sr-only">Instagram</span>
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.012-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.048-1.024-.06-1.378-.06-3.808s.012-2.784.06-3.808c.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.08 2.525c.636-.247 1.363-.416 2.427-.465C9.53 2.013 9.884 2 12.315 2zm-1.043 11.232a3.712 3.712 0 117.424 0 3.712 3.712 0 01-7.424 0zm10.402-8.12a1.42 1.42 0 100 2.84 1.42 1.42 0 000-2.84z" clip-rule="evenodd" /></svg>
-                 </a>
-                 <a href="#" class="hover:text-black">
-                    <span class="sr-only">LinkedIn</span>
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-                 </a>
-                 <a href="#" class="hover:text-black">
-                    <span class="sr-only">GitHub</span>
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.165 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.03 1.595 1.03 2.688 0 3.848-2.338 4.695-4.566 4.942.359.308.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.578.688.482A10.001 10.001 0 0022 12c0-5.523-4.477-10-10-10z" clip-rule="evenodd" /></svg>
-                 </a>
+                 <!-- Social Icons -->
+                 <a href="#" class="hover:text-black"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.012-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.048-1.024-.06-1.378-.06-3.808s.012-2.784.06-3.808c.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.08 2.525c.636-.247 1.363-.416 2.427-.465C9.53 2.013 9.884 2 12.315 2zm-1.043 11.232a3.712 3.712 0 117.424 0 3.712 3.712 0 01-7.424 0zm10.402-8.12a1.42 1.42 0 100 2.84 1.42 1.42 0 000-2.84z" clip-rule="evenodd" /></svg></a>
+                 <a href="#" class="hover:text-black"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg></a>
+                 <a href="#" class="hover:text-black"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.165 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.03 1.595 1.03 2.688 0 3.848-2.338 4.695-4.566 4.942.359.308.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.578.688.482A10.001 10.001 0 0022 12c0-5.523-4.477-10-10-10z" clip-rule="evenodd" /></svg></a>
             </div>
         </div>
     </aside>
 
     <main>
-        <!-- Hero Section -->
-        <section id="hero" class="hero-section px-4">
+        <section id="hero">
             <div id="hero-graphics" class="absolute top-0 left-0 w-full h-full pointer-events-none">
-                <!-- Icon 1: Rocket -->
+                <!-- Icons -->
                 <svg class="graphic-icon icon-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.82m5.84-2.56a6 6 0 017.38 5.84h-4.82m-2.56-5.84a6 6 0 01-7.38-5.84m12.22 0A6 6 0 0114.37 15.59m-2.56-5.84a6 6 0 015.84-7.38m-5.84 2.56a6 6 0 01-5.84-7.38m0 12.22A6 6 0 018.41 8.41" /></svg>
-                <!-- Icon 2: Star -->
                 <svg class="graphic-icon icon-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" /></svg>
-                <!-- Icon 3: Trophy -->
                 <svg class="graphic-icon icon-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9a9 9 0 119 0zM16.5 18.75a9 9 0 00-9 0m9 0a9 9 0 01-9 0m9 0v-4.5A2.25 2.25 0 0014.25 12H9.75A2.25 2.25 0 007.5 14.25v4.5m9 0a9 9 0 00-9 0" /></svg>
-                <!-- Icon 4: Lightbulb -->
                 <svg class="graphic-icon icon-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.311a15.045 15.045 0 01-7.5 0C4.995 20.286 3 22.5 3 22.5s1.995.714 4.5 1.409m7.5-1.409c2.505-.695 4.5-1.409 4.5-1.409s-1.995.714-4.5 1.409z" /></svg>
             </div>
-            <h1 class="text-7xl md:text-9xl font-black tracking-tight mb-4 text-transparent bg-clip-text bg-gradient-to-br from-[#44444E] to-[#37353E]">
-                Taskly
-            </h1>
-            <p class="text-2xl md:text-3xl mb-8 max-w-2xl" style="color: #44444E;">
-                Productivity that feels like play
-            </p>
-            <button class="cta-button text-xl font-semibold text-white py-4 px-10 rounded-full shadow-lg" style="background-color: var(--text-dark); box-shadow: 0 10px 20px -5px rgba(55, 65, 81, 0.3);">
-                Join the Waitlist
-            </button>
-        </section>
-
-        <!-- Devices Section -->
-        <section id="devices" class="devices-section px-4">
-            <!-- Mobile Mockup -->
-            <div id="mobile-mockup" class="rounded-2xl p-3 shadow-2xl border-4 border-gray-700 bg-gray-800">
-                <div class="bg-white rounded-lg p-6 space-y-4">
-                    <div class="flex justify-between items-center">
-                        <h2 class="text-2xl font-bold text-gray-800">Today's Tasks</h2>
-                        <span class="text-sm font-medium bg-gray-200 text-gray-600 px-3 py-1 rounded-full">8 of 12</span>
-                    </div>
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between bg-blue-100 text-blue-800 p-4 rounded-lg">
-                            <div>
-                                <p class="font-semibold">Complete project proposal</p>
-                                <p class="text-sm">Due: 2:00 PM</p>
-                            </div>
-                            <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white">✓</div>
-                        </div>
-                        <div class="flex items-center justify-between bg-green-100 text-green-800 p-4 rounded-lg">
-                            <div>
-                                <p class="font-semibold">Team meeting preparation</p>
-                                <p class="text-sm">Due: 3:00 PM</p>
-                            </div>
-                            <div class="w-6 h-6 bg-green-500 rounded-full"></div>
-                        </div>
-                        <div class="flex items-center justify-between bg-yellow-100 text-yellow-800 p-4 rounded-lg">
-                            <div>
-                                <p class="font-semibold">Review design mockups</p>
-                                <p class="text-sm">Due: 5:00 PM</p>
-                            </div>
-                            <div class="w-6 h-6 bg-yellow-500 rounded-full"></div>
-                        </div>
-                         <div class="flex items-center justify-between bg-purple-100 text-purple-800 p-4 rounded-lg">
-                            <div>
-                                <p class="font-semibold">Update project timeline</p>
-                                <p class="text-sm">Due: Tomorrow</p>
-                            </div>
-                            <div class="w-6 h-6 bg-purple-500 rounded-full"></div>
-                        </div>
-                    </div>
-                    <div class="flex justify-center space-x-2 pt-4">
-                        <span class="w-2 h-2 bg-gray-800 rounded-full"></span>
-                        <span class="w-2 h-2 bg-gray-300 rounded-full"></span>
-                        <span class="w-2 h-2 bg-gray-300 rounded-full"></span>
-                    </div>
-                </div>
+            <div class="scroll-animate px-4">
+                 <h1 class="text-7xl md:text-9xl font-black tracking-tight mb-4 text-transparent bg-clip-text bg-gradient-to-br from-[#44444E] to-[#37353E]">Taskly</h1>
+                 <p class="text-3xl md:text-4xl mb-8 max-w-2xl" style="color: #44444E;">Productivity that feels like play</p>
+                 <button class="cta-button text-xl font-semibold text-white py-4 px-10 rounded-full shadow-lg" style="background-color: var(--text-dark); box-shadow: 0 10px 20px -5px rgba(55, 65, 81, 0.3);">Join the Waitlist</button>
             </div>
-
-            <!-- Desktop Mockup -->
-            <div id="desktop-mockup" class="rounded-2xl p-2 shadow-2xl border-4 border-gray-700 bg-gray-800">
-                <div class="bg-white rounded-lg p-6">
-                    <div class="flex justify-between items-start mb-6">
-                        <h2 class="text-3xl font-bold text-gray-800">Dashboard Overview</h2>
-                         <div class="flex space-x-1.5">
-                            <span class="w-3 h-3 bg-red-500 rounded-full"></span>
-                            <span class="w-3 h-3 bg-yellow-500 rounded-full"></span>
-                            <span class="w-3 h-3 bg-green-500 rounded-full"></span>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-blue-50 p-4 rounded-lg">
-                            <p class="text-sm text-blue-600 font-medium">Active Projects</p>
-                            <p class="text-4xl font-bold text-blue-800">8</p>
-                            <p class="text-xs text-blue-500">2 new this week</p>
-                        </div>
-                         <div class="bg-green-50 p-4 rounded-lg">
-                            <p class="text-sm text-green-600 font-medium">Completed Today</p>
-                            <p class="text-4xl font-bold text-green-800">15</p>
-                             <p class="text-xs text-green-500">Goal: 12</p>
-                        </div>
-                         <div class="bg-purple-50 p-4 rounded-lg">
-                            <p class="text-sm text-purple-600 font-medium">Team Members</p>
-                            <p class="text-4xl font-bold text-purple-800">12</p>
-                             <p class="text-xs text-purple-500">3 departments</p>
-                        </div>
-                         <div class="bg-red-50 p-4 rounded-lg">
-                            <p class="text-sm text-red-600 font-medium">Time Saved</p>
-                            <p class="text-4xl font-bold text-red-800">4.2h</p>
-                            <p class="text-xs text-red-500">vs last week</p>
-                        </div>
-                    </div>
-                </div>
+            <div class="scroll-indicator">
+                <div class="mouse"><div class="mouse-wheel"></div></div>
             </div>
         </section>
 
-        <!-- Features Section -->
-        <section id="features" class="features-section">
-            <div class="text-center section-content max-w-7xl mx-auto">
-                <h2 class="scroll-animate text-4xl md:text-5xl font-bold tracking-tight">Manage Your Life, Effortlessly</h2>
-                <p class="scroll-animate mt-4 text-lg text-gray-500 max-w-3xl mx-auto">Taskly brings all your notes, tasks, and projects into one beautifully simple space. Focus on what matters.</p>
-            </div>
-
-            <div class="mt-20 features-container">
-                <div class="features-grid">
-                    <!-- Cards are duplicated for seamless animation loop -->
-                    <div class="feature-card p-8 rounded-2xl text-center">
-                        <div class="text-4xl mb-4">✨</div>
-                        <h3 class="text-xl font-bold mb-2">Smart Organization</h3>
-                        <p class="text-gray-600">Automatically categorize your tasks and notes with AI assistance to keep your workspace tidy.</p>
-                    </div>
-                    <div class="feature-card p-8 rounded-2xl text-center">
-                        <div class="text-4xl mb-4">🎨</div>
-                        <h3 class="text-xl font-bold mb-2">Customizable Views</h3>
-                        <p class="text-gray-600">Switch between list, board, and calendar views to fit your personal workflow and style.</p>
-                    </div>
-                    <div class="feature-card p-8 rounded-2xl text-center">
-                        <div class="text-4xl mb-4">🔗</div>
-                        <h3 class="text-xl font-bold mb-2">Seamless Sync</h3>
-                        <p class="text-gray-600">Your data is always in sync across all your devices, instantly and reliably.</p>
-                    </div>
-                    <div class="feature-card p-8 rounded-2xl text-center">
-                        <div class="text-4xl mb-4">🤝</div>
-                        <h3 class="text-xl font-bold mb-2">Collaborate Easily</h3>
-                        <p class="text-gray-600">Share projects, assign tasks, and leave comments effortlessly with your team.</p>
-                    </div>
-                    <div class="feature-card p-8 rounded-2xl text-center">
-                        <div class="text-4xl mb-4">🔒</div>
-                        <h3 class="text-xl font-bold mb-2">Private & Secure</h3>
-                        <p class="text-gray-600">With end-to-end encryption, your data is always protected and for your eyes only.</p>
-                    </div>
-                    <div class="feature-card p-8 rounded-2xl text-center">
-                        <div class="text-4xl mb-4">🚀</div>
-                        <h3 class="text-xl font-bold mb-2">Lightning Fast</h3>
-                        <p class="text-gray-600">Designed for speed. Capture ideas and manage tasks as quickly as they come to you.</p>
-                    </div>
-                     <!-- Duplicate set -->
-                    <div class="feature-card p-8 rounded-2xl text-center">
-                        <div class="text-4xl mb-4">✨</div>
-                        <h3 class="text-xl font-bold mb-2">Smart Organization</h3>
-                        <p class="text-gray-600">Automatically categorize your tasks and notes with AI assistance to keep your workspace tidy.</p>
-                    </div>
-                    <div class="feature-card p-8 rounded-2xl text-center">
-                        <div class="text-4xl mb-4">🎨</div>
-                        <h3 class="text-xl font-bold mb-2">Customizable Views</h3>
-                        <p class="text-gray-600">Switch between list, board, and calendar views to fit your personal workflow and style.</p>
-                    </div>
-                    <div class="feature-card p-8 rounded-2xl text-center">
-                        <div class="text-4xl mb-4">🔗</div>
-                        <h3 class="text-xl font-bold mb-2">Seamless Sync</h3>
-                        <p class="text-gray-600">Your data is always in sync across all your devices, instantly and reliably.</p>
-                    </div>
-                    <div class="feature-card p-8 rounded-2xl text-center">
-                        <div class="text-4xl mb-4">🤝</div>
-                        <h3 class="text-xl font-bold mb-2">Collaborate Easily</h3>
-                        <p class="text-gray-600">Share projects, assign tasks, and leave comments effortlessly with your team.</p>
-                    </div>
-                    <div class="feature-card p-8 rounded-2xl text-center">
-                        <div class="text-4xl mb-4">🔒</div>
-                        <h3 class="text-xl font-bold mb-2">Private & Secure</h3>
-                        <p class="text-gray-600">With end-to-end encryption, your data is always protected and for your eyes only.</p>
-                    </div>
-                    <div class="feature-card p-8 rounded-2xl text-center">
-                        <div class="text-4xl mb-4">🚀</div>
-                        <h3 class="text-xl font-bold mb-2">Lightning Fast</h3>
-                        <p class="text-gray-600">Designed for speed. Capture ideas and manage tasks as quickly as they come to you.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Why Us Section -->
-        <section id="why-us" class="why-us-section max-w-7xl mx-auto section-content">
-            <div class="text-center">
-                <h2 class="scroll-animate text-4xl md:text-5xl font-bold tracking-tight">Why Taskly is Different</h2>
-                <p class="scroll-animate mt-4 text-lg text-gray-500 max-w-3xl mx-auto">We built Taskly with a focus on simplicity, power, and a delightful user experience.</p>
-            </div>
-            <div class="mt-20 grid gap-10 md:grid-cols-3">
-                <div class="scroll-animate why-us-card p-8 rounded-2xl">
-                    <h3 class="text-xl font-bold mb-3">Uncluttered by Design</h3>
-                    <p class="text-gray-600">We believe software should be powerful yet simple. Taskly offers robust features without the confusing interface, letting you focus on your work, not on learning a new tool.</p>
-                </div>
-                <div class="scroll-animate why-us-card p-8 rounded-2xl" style="transition-delay: 100ms;">
-                    <h3 class="text-xl font-bold mb-3">Built for Collaboration</h3>
-                    <p class="text-gray-600">From shared project boards to real-time comments, Taskly is designed to make teamwork seamless, whether you're in the same room or across the globe.</p>
-                </div>
-                <div class="scroll-animate why-us-card p-8 rounded-2xl" style="transition-delay: 200ms;">
-                    <h3 class="text-xl font-bold mb-3">Ethical and Secure</h3>
-                    <p class="text-gray-600">Your privacy is our priority. We use state-of-the-art encryption to protect your data, and we'll never sell it. Your trust is our most important asset.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Testimonials Section -->
-        <section id="testimonials" class="testimonials-section bg-white/30">
-            <div class="max-w-7xl mx-auto section-content">
+        <section id="devices">
+             <div class="section-content">
                 <div class="text-center">
-                    <h2 class="scroll-animate text-4xl font-bold tracking-tight">Loved by Teams Everywhere</h2>
-                    <p class="scroll-animate mt-4 text-lg text-gray-500">Don't just take our word for it. Here's what others have to say.</p>
+                    <h2 class="scroll-animate text-5xl md:text-6xl font-bold tracking-tight">Available on All Your Devices</h2>
+                    <p class="scroll-animate delay-1 mt-4 text-xl text-gray-500 max-w-3xl mx-auto">Seamlessly sync your tasks and notes across mobile and desktop.</p>
                 </div>
-                <div class="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                    <div class="scroll-animate testimonial-card rounded-2xl p-8">
-                        <p class="text-gray-700">"Taskly has revolutionized our workflow. The interface is so intuitive and clean. We're getting more done than ever before."</p>
-                        <div class="mt-4 font-bold">- Sarah L., Project Manager</div>
+                <div class="flex justify-center items-center gap-12 flex-wrap mt-12">
+                    <!-- Mobile Mockup -->
+                    <div id="mobile-mockup" class="rounded-2xl p-3 shadow-2xl border-4 border-gray-700 bg-gray-800">
+                        <div class="bg-white rounded-lg p-6 space-y-4">
+                            <div class="flex justify-between items-center"><h2 class="text-2xl font-bold text-gray-800">Today's Tasks</h2><span class="text-sm font-medium bg-gray-200 text-gray-600 px-3 py-1 rounded-full">8 of 12</span></div>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between bg-blue-100 text-blue-800 p-4 rounded-lg"><div><p class="font-semibold">Complete project proposal</p><p class="text-sm">Due: 2:00 PM</p></div><div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white">✓</div></div>
+                                <div class="flex items-center justify-between bg-green-100 text-green-800 p-4 rounded-lg"><div><p class="font-semibold">Team meeting preparation</p><p class="text-sm">Due: 3:00 PM</p></div><div class="w-6 h-6 bg-green-500 rounded-full"></div></div>
+                                <div class="flex items-center justify-between bg-yellow-100 text-yellow-800 p-4 rounded-lg"><div><p class="font-semibold">Review design mockups</p><p class="text-sm">Due: 5:00 PM</p></div><div class="w-6 h-6 bg-yellow-500 rounded-full"></div></div>
+                                <div class="flex items-center justify-between bg-purple-100 text-purple-800 p-4 rounded-lg"><div><p class="font-semibold">Update project timeline</p><p class="text-sm">Due: Tomorrow</p></div><div class="w-6 h-6 bg-purple-500 rounded-full"></div></div>
+                            </div>
+                            <div class="flex justify-center space-x-2 pt-4"><span class="w-2 h-2 bg-gray-800 rounded-full"></span><span class="w-2 h-2 bg-gray-300 rounded-full"></span><span class="w-2 h-2 bg-gray-300 rounded-full"></span></div>
+                        </div>
                     </div>
-                     <div class="scroll-animate testimonial-card rounded-2xl p-8" style="transition-delay: 100ms;">
-                        <p class="text-gray-700">"The seamless sync between my phone and laptop is a game-changer. I can capture an idea on the go and find it on my desktop instantly."</p>
-                        <div class="mt-4 font-bold">- Mike R., Freelance Designer</div>
+                    <!-- Desktop Mockup -->
+                    <div id="desktop-mockup" class="rounded-2xl p-2 shadow-2xl border-4 border-gray-700 bg-gray-800">
+                        <div class="bg-white rounded-lg p-6">
+                            <div class="flex justify-between items-start mb-6"><h2 class="text-3xl font-bold text-gray-800">Dashboard Overview</h2><div class="flex space-x-1.5"><span class="w-3 h-3 bg-red-500 rounded-full"></span><span class="w-3 h-3 bg-yellow-500 rounded-full"></span><span class="w-3 h-3 bg-green-500 rounded-full"></span></div></div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-blue-50 p-4 rounded-lg"><p class="text-sm text-blue-600 font-medium">Active Projects</p><p class="text-4xl font-bold text-blue-800">8</p><p class="text-xs text-blue-500">2 new this week</p></div>
+                                <div class="bg-green-50 p-4 rounded-lg"><p class="text-sm text-green-600 font-medium">Completed Today</p><p class="text-4xl font-bold text-green-800">15</p><p class="text-xs text-green-500">Goal: 12</p></div>
+                                <div class="bg-purple-50 p-4 rounded-lg"><p class="text-sm text-purple-600 font-medium">Team Members</p><p class="text-4xl font-bold text-purple-800">12</p><p class="text-xs text-purple-500">3 departments</p></div>
+                                <div class="bg-red-50 p-4 rounded-lg"><p class="text-sm text-red-600 font-medium">Time Saved</p><p class="text-4xl font-bold text-red-800">4.2h</p><p class="text-xs text-red-500">vs last week</p></div>
+                            </div>
+                        </div>
                     </div>
-                     <div class="scroll-animate testimonial-card rounded-2xl p-8" style="transition-delay: 200ms;">
-                        <p class="text-gray-700">"Finally, a task manager that doesn't feel like a chore to use. It's beautiful, fast, and has all the features we need without the clutter."</p>
-                        <div class="mt-4 font-bold">- Emily C., CEO of a Startup</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features">
+            <div class="section-content w-full">
+                <div class="text-center">
+                    <h2 class="scroll-animate text-5xl md:text-6xl font-bold tracking-tight">Manage Your Life, Effortlessly</h2>
+                    <p class="scroll-animate delay-1 mt-4 text-xl text-gray-500 max-w-3xl mx-auto">Taskly brings all your notes, tasks, and projects into one beautifully simple space. Focus on what matters.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
+                    <div class="scroll-animate feature-card p-8 rounded-2xl"><div class="text-4xl mb-4">✨</div><h3 class="text-xl font-bold mb-2">Smart Organization</h3><p class="text-gray-600">Automatically categorize your tasks and notes with AI assistance to keep your workspace tidy.</p></div>
+                    <div class="scroll-animate delay-1 feature-card p-8 rounded-2xl"><div class="text-4xl mb-4">🎨</div><h3 class="text-xl font-bold mb-2">Customizable Views</h3><p class="text-gray-600">Switch between list, board, and calendar views to fit your personal workflow and style.</p></div>
+                    <div class="scroll-animate delay-2 feature-card p-8 rounded-2xl"><div class="text-4xl mb-4">🔗</div><h3 class="text-xl font-bold mb-2">Seamless Sync</h3><p class="text-gray-600">Your data is always in sync across all your devices, instantly and reliably.</p></div>
+                    <div class="scroll-animate feature-card p-8 rounded-2xl"><div class="text-4xl mb-4">🤝</div><h3 class="text-xl font-bold mb-2">Collaborate Easily</h3><p class="text-gray-600">Share projects, assign tasks, and leave comments effortlessly with your team.</p></div>
+                    <div class="scroll-animate delay-1 feature-card p-8 rounded-2xl"><div class="text-4xl mb-4">🔒</div><h3 class="text-xl font-bold mb-2">Private & Secure</h3><p class="text-gray-600">With end-to-end encryption, your data is always protected and for your eyes only.</p></div>
+                    <div class="scroll-animate delay-2 feature-card p-8 rounded-2xl"><div class="text-4xl mb-4">🚀</div><h3 class="text-xl font-bold mb-2">Lightning Fast</h3><p class="text-gray-600">Designed for speed. Capture ideas and manage tasks as quickly as they come to you.</p></div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="why-us">
+            <div class="section-content">
+                <div class="text-center"><h2 class="scroll-animate text-5xl md:text-6xl font-bold tracking-tight">Why Taskly is Different</h2><p class="scroll-animate delay-1 mt-4 text-xl text-gray-500 max-w-3xl mx-auto">We built Taskly with a focus on simplicity, power, and a delightful user experience.</p></div>
+                <div class="grid gap-10 md:grid-cols-3 mt-12">
+                    <div class="scroll-animate why-us-card p-10 rounded-2xl"><h3 class="text-2xl font-bold mb-3">Uncluttered by Design</h3><p class="text-gray-600">We believe software should be powerful yet simple. Taskly offers robust features without the confusing interface, letting you focus on your work, not on learning a new tool.</p></div>
+                    <div class="scroll-animate delay-1 why-us-card p-10 rounded-2xl"><h3 class="text-2xl font-bold mb-3">Built for Collaboration</h3><p class="text-gray-600">From shared project boards to real-time comments, Taskly is designed to make teamwork seamless, whether you're in the same room or across the globe.</p></div>
+                    <div class="scroll-animate delay-2 why-us-card p-10 rounded-2xl"><h3 class="text-2xl font-bold mb-3">Ethical and Secure</h3><p class="text-gray-600">Your privacy is our priority. We use state-of-the-art encryption to protect your data, and we'll never sell it. Your trust is our most important asset.</p></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="testimonials">
+            <div class="section-content w-full">
+                <div class="text-center"><h2 class="scroll-animate text-5xl font-bold tracking-tight">Loved by Teams Everywhere</h2><p class="scroll-animate delay-1 mt-4 text-xl text-gray-500">Don't just take our word for it. Here's what others have to say.</p></div>
+                <div class="scrolling-container mt-12">
+                    <div class="scrolling-grid">
+                        <!-- Duplicated for seamless scroll -->
+                        <div class="testimonial-card rounded-2xl p-10"><p class="text-lg text-gray-700">"Taskly has revolutionized our workflow. The interface is so intuitive and clean. We're getting more done than ever before."</p><div class="mt-4 font-bold">- Sarah L., Project Manager</div></div>
+                        <div class="testimonial-card rounded-2xl p-10"><p class="text-lg text-gray-700">"The seamless sync between my phone and laptop is a game-changer. I can capture an idea on the go and find it on my desktop instantly."</p><div class="mt-4 font-bold">- Mike R., Freelance Designer</div></div>
+                        <div class="testimonial-card rounded-2xl p-10"><p class="text-lg text-gray-700">"Finally, a task manager that doesn't feel like a chore to use. It's beautiful, fast, and has all the features we need without the clutter."</p><div class="mt-4 font-bold">- Emily C., CEO of a Startup</div></div>
+                        <div class="testimonial-card rounded-2xl p-10"><p class="text-lg text-gray-700">"Taskly has revolutionized our workflow. The interface is so intuitive and clean. We're getting more done than ever before."</p><div class="mt-4 font-bold">- Sarah L., Project Manager</div></div>
+                        <div class="testimonial-card rounded-2xl p-10"><p class="text-lg text-gray-700">"The seamless sync between my phone and laptop is a game-changer. I can capture an idea on the go and find it on my desktop instantly."</p><div class="mt-4 font-bold">- Mike R., Freelance Designer</div></div>
+                        <div class="testimonial-card rounded-2xl p-10"><p class="text-lg text-gray-700">"Finally, a task manager that doesn't feel like a chore to use. It's beautiful, fast, and has all the features we need without the clutter."</p><div class="mt-4 font-bold">- Emily C., CEO of a Startup</div></div>
                     </div>
                 </div>
             </div>
         </section>
         
-        <!-- CTA Section -->
-        <section id="request-demo" class="cta-section max-w-4xl mx-auto text-center section-content">
-            <h2 class="scroll-animate text-5xl font-bold tracking-tight">Ready to See It in Action?</h2>
-            <p class="scroll-animate mt-4 text-xl text-gray-500 max-w-2xl mx-auto">Request a personalized demo to see how Taskly can transform your team's productivity.</p>
-            <div class="scroll-animate mt-8">
-                <button class="cta-button text-xl font-semibold text-white py-4 px-10 rounded-full shadow-lg" style="background-color: var(--text-dark); box-shadow: 0 10px 20px -5px rgba(55, 65, 81, 0.3);">
-                    Request a Demo
-                </button>
-            </div>
+        <section id="enquire">
+             <div class="w-full">
+                <div class="py-24">
+                    <div class="section-content max-w-4xl mx-auto">
+                        <div class="text-center"><h2 class="scroll-animate text-4xl font-bold tracking-tight">Have a Question?</h2><p class="scroll-animate delay-1 mt-4 text-lg text-gray-500 max-w-2xl mx-auto">We're here to help. Fill out the form below and we'll get back to you as soon as possible.</p></div>
+                        <form class="scroll-animate delay-2 mt-12 max-w-xl mx-auto space-y-6">
+                            <div><label for="name" class="sr-only">Name</label><input type="text" id="name" name="name" placeholder="Your Name" class="form-input"></div>
+                            <div><label for="email" class="sr-only">Email</label><input type="email" id="email" name="email" placeholder="Your Email" class="form-input"></div>
+                            <div><label for="query" class="sr-only">Query</label><textarea id="query" name="query" rows="4" placeholder="Your Message" class="form-input"></textarea></div>
+                            <div class="text-center"><button type="submit" class="cta-button text-lg font-semibold text-white py-3 px-8 rounded-full shadow-lg" style="background-color: var(--accent-brown); box-shadow: 0 10px 20px -5px rgba(207, 171, 141, 0.4);">Send Message</button></div>
+                        </form>
+                    </div>
+                </div>
+                
+                <footer class="bg-white/30 backdrop-blur-sm text-gray-600">
+                    <div class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+                        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
+                            <div class="col-span-2 md:col-span-4 lg:col-span-1"><h2 class="text-2xl font-bold text-gray-800">Deep Pebble</h2><p class="mt-1 text-xs text-gray-500">Innovations Simplified</p><p class="mt-2 text-sm">&copy; 2024 Inc. All rights reserved.</p></div>
+                            <div><h3 class="font-semibold text-gray-800 tracking-wider uppercase">Company</h3><ul class="mt-4 space-y-2"><li><a href="#" class="hover:text-black">About Us</a></li><li><a href="#" class="hover:text-black">Our Team</a></li><li><a href="#enquire" class="hover:text-black">Contact Us</a></li></ul></div>
+                             <div><h3 class="font-semibold text-gray-800 tracking-wider uppercase">Product</h3><ul class="mt-4 space-y-2"><li><a href="#features" class="hover:text-black">Features</a></li><li><a href="#" class="hover:text-black">Pricing</a></li><li><a href="#request-demo" class="hover:text-black">Request Demo</a></li></ul></div>
+                             <div><h3 class="font-semibold text-gray-800 tracking-wider uppercase">Community</h3><ul class="mt-4 space-y-2"><li><a href="#" class="hover:text-black">Join Our Community</a></li><li><a href="#" class="hover:text-black">Blog</a></li></ul></div>
+                            <div class="col-span-2 md:col-span-1"><h3 class="font-semibold text-gray-800 tracking-wider uppercase">Social</h3><div class="flex space-x-4 mt-4">
+                                <!-- Social Icons -->
+                                <a href="#" class="hover:text-black"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.012-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.048-1.024-.06-1.378-.06-3.808s.012-2.784.06-3.808c.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.08 2.525c.636-.247 1.363-.416 2.427-.465C9.53 2.013 9.884 2 12.315 2zm-1.043 11.232a3.712 3.712 0 117.424 0 3.712 3.712 0 01-7.424 0zm10.402-8.12a1.42 1.42 0 100 2.84 1.42 1.42 0 000-2.84z" clip-rule="evenodd" /></svg></a>
+                                <a href="#" class="hover:text-black"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg></a>
+                                <a href="#" class="hover:text-black"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.165 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.03 1.595 1.03 2.688 0 3.848-2.338 4.695-4.566 4.942.359.308.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.578.688.482A10.001 10.001 0 0022 12c0-5.523-4.477-10-10-10z" clip-rule="evenodd" /></svg></a>
+                                <a href="#" class="hover:text-black"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.701v-8l8 3.993-8 4.007z" clip-rule="evenodd" /></svg></a>
+                             </div></div>
+                        </div>
+                    </div>
+                </footer>
+             </div>
         </section>
-
-        <!-- Enquire Section -->
-        <section id="enquire" class="enquire-section max-w-4xl mx-auto section-content">
-            <div class="text-center">
-                <h2 class="scroll-animate text-4xl font-bold tracking-tight">Have a Question?</h2>
-                <p class="scroll-animate mt-4 text-lg text-gray-500 max-w-2xl mx-auto">We're here to help. Fill out the form below and we'll get back to you as soon as possible.</p>
-            </div>
-            <form class="scroll-animate mt-12 max-w-xl mx-auto space-y-6">
-                <div>
-                    <label for="name" class="sr-only">Name</label>
-                    <input type="text" id="name" name="name" placeholder="Your Name" class="form-input">
-                </div>
-                <div>
-                    <label for="email" class="sr-only">Email</label>
-                    <input type="email" id="email" name="email" placeholder="Your Email" class="form-input">
-                </div>
-                <div>
-                    <label for="query" class="sr-only">Query</label>
-                    <textarea id="query" name="query" rows="4" placeholder="Your Message" class="form-input"></textarea>
-                </div>
-                <div class="text-center">
-                     <button type="submit" class="cta-button text-lg font-semibold text-white py-3 px-8 rounded-full shadow-lg" style="background-color: var(--accent-brown); box-shadow: 0 10px 20px -5px rgba(207, 171, 141, 0.4);">
-                        Send Message
-                    </button>
-                </div>
-            </form>
-        </section>
-
-        <!-- FAQ Section -->
-        <section id="faq" class="faq-section max-w-4xl mx-auto section-content">
-            <div class="text-center">
-                <h2 class="scroll-animate text-4xl font-bold tracking-tight">Frequently Asked Questions</h2>
-            </div>
-            <div class="mt-12 space-y-4">
-                <details class="scroll-animate faq-item p-6 rounded-2xl">
-                    <summary class="font-semibold text-lg flex justify-between items-center">
-                        Is my data safe with Taskly?
-                        <span class="text-2xl">+</span>
-                    </summary>
-                    <p class="mt-4 text-gray-600">Absolutely. We use end-to-end encryption for all your data. This means only you can access your tasks and notes. We cannot see your data, and no one else can either.</p>
-                </details>
-                <details class="scroll-animate faq-item p-6 rounded-2xl" style="transition-delay: 100ms;">
-                    <summary class="font-semibold text-lg flex justify-between items-center">
-                        Can I use Taskly with my team?
-                        <span class="text-2xl">+</span>
-                    </summary>
-                    <p class="mt-4 text-gray-600">Yes! Taskly is built for collaboration. You can create shared projects, assign tasks to team members, leave comments, and see real-time updates to keep everyone in sync.</p>
-                </details>
-                <details class="scroll-animate faq-item p-6 rounded-2xl" style="transition-delay: 200ms;">
-                    <summary class="font-semibold text-lg flex justify-between items-center">
-                        What platforms does Taskly support?
-                        <span class="text-2xl">+</span>
-                    </summary>
-                    <p class="mt-4 text-gray-600">Taskly will be available on all major platforms, including Web, iOS, Android, macOS, and Windows. Your data syncs seamlessly across all of them.</p>
-                </details>
-                <details class="scroll-animate faq-item p-6 rounded-2xl" style="transition-delay: 300ms;">
-                    <summary class="font-semibold text-lg flex justify-between items-center">
-                        When will Taskly be available?
-                        <span class="text-2xl">+</span>
-                    </summary>
-                    <p class="mt-4 text-gray-600">We are working hard to put the finishing touches on Taskly. Join the waitlist to get notified as soon as we launch and to get early access!</p>
-                </details>
-            </div>
-        </section>
-        
-        <footer class="bg-white/30 backdrop-blur-sm text-gray-600 mt-16">
-            <div class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
-                    <div class="col-span-2 md:col-span-4 lg:col-span-1">
-                        <h2 class="text-2xl font-bold text-gray-800">Deep Pebble</h2>
-                        <p class="mt-1 text-xs text-gray-500">Innovations Simplified</p>
-                        <p class="mt-2 text-sm">&copy; 2024 Inc. All rights reserved.</p>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold text-gray-800 tracking-wider uppercase">Company</h3>
-                        <ul class="mt-4 space-y-2">
-                            <li><a href="#" class="hover:text-black">About Us</a></li>
-                            <li><a href="#" class="hover:text-black">Our Team</a></li>
-                            <li><a href="#enquire" class="hover:text-black">Contact Us</a></li>
-                        </ul>
-                    </div>
-                     <div>
-                        <h3 class="font-semibold text-gray-800 tracking-wider uppercase">Product</h3>
-                        <ul class="mt-4 space-y-2">
-                            <li><a href="#features" class="hover:text-black">Features</a></li>
-                            <li><a href="#" class="hover:text-black">Pricing</a></li>
-                            <li><a href="#request-demo" class="hover:text-black">Request Demo</a></li>
-                        </ul>
-                    </div>
-                     <div>
-                        <h3 class="font-semibold text-gray-800 tracking-wider uppercase">Community</h3>
-                        <ul class="mt-4 space-y-2">
-                            <li><a href="#" class="hover:text-black">Join Our Community</a></li>
-                            <li><a href="#" class="hover:text-black">Blog</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-span-2 md:col-span-1">
-                         <h3 class="font-semibold text-gray-800 tracking-wider uppercase">Social</h3>
-                         <div class="flex space-x-4 mt-4">
-                             <a href="#" class="hover:text-black">
-                                <span class="sr-only">Instagram</span>
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.012-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.048-1.024-.06-1.378-.06-3.808s.012-2.784.06-3.808c.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.08 2.525c.636-.247 1.363-.416 2.427-.465C9.53 2.013 9.884 2 12.315 2zm-1.043 11.232a3.712 3.712 0 117.424 0 3.712 3.712 0 01-7.424 0zm10.402-8.12a1.42 1.42 0 100 2.84 1.42 1.42 0 000-2.84z" clip-rule="evenodd" /></svg>
-                             </a>
-                             <a href="#" class="hover:text-black">
-                                <span class="sr-only">LinkedIn</span>
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-                             </a>
-                             <a href="#" class="hover:text-black">
-                                <span class="sr-only">GitHub</span>
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.165 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.03 1.595 1.03 2.688 0 3.848-2.338 4.695-4.566 4.942.359.308.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.578.688.482A10.001 10.001 0 0022 12c0-5.523-4.477-10-10-10z" clip-rule="evenodd" /></svg>
-                             </a>
-                             <a href="#" class="hover:text-black">
-                                <span class="sr-only">YouTube</span>
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.701v-8l8 3.993-8 4.007z" clip-rule="evenodd" /></svg>
-                             </a>
-                         </div>
-                    </div>
-                </div>
-            </div>
-        </footer>
-
     </main>
 
     <script>
@@ -781,78 +559,22 @@
             // --- Raining Letters Background ---
             const letterCanvas = document.getElementById('letter-rain-canvas');
             const letterCtx = letterCanvas.getContext('2d');
-
             let lw, lh;
             let particles = [];
             const particleCount = 50; 
-            const characters = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッンabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZабвгдеёжзийклмнопрстуфхцчшщъыьэюяΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ0123456789';
+            const characters = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッンabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZабвгдеёжзийклмнопрстуфцшщъыьэюяΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ0123456789';
             const fontSize = 16;
-            
-            function Particle(x, y, char, speed) {
-                this.x = x;
-                this.y = y;
-                this.char = char;
-                this.speed = speed;
-            }
-
-            function initializeRain() {
-                lw = letterCanvas.width = window.innerWidth;
-                lh = letterCanvas.height = window.innerHeight;
-                particles = [];
-                for (let i = 0; i < particleCount; i++) {
-                    particles.push(new Particle(
-                        Math.random() * lw,
-                        Math.random() * lh,
-                        characters[Math.floor(Math.random() * characters.length)],
-                        Math.random() * 2 + 1 // Increased speed
-                    ));
-                }
-            }
-            
-            function drawRain() {
-                letterCtx.fillStyle = 'rgba(236, 238, 223, 1)'; // Solid background color to remove trails
-                letterCtx.fillRect(0, 0, lw, lh);
-                letterCtx.fillStyle = '#44444E';
-                letterCtx.font = fontSize + 'px Inter';
-
-                for (let i = 0; i < particles.length; i++) {
-                    let p = particles[i];
-                    letterCtx.fillText(p.char, p.x, p.y);
-                    p.y += p.speed;
-                    if (p.y > lh) {
-                        p.y = 0;
-                        p.x = Math.random() * lw;
-                        p.char = characters[Math.floor(Math.random() * characters.length)];
-                        p.speed = Math.random() * 2 + 1;
-                    }
-                }
-            }
-            
-            window.addEventListener('resize', initializeRain);
-            initializeRain();
-            setInterval(drawRain, 45);
-
+            function Particle(x,y,char,speed){this.x=x;this.y=y;this.char=char;this.speed=speed;}
+            function initializeRain(){
+                lw=letterCanvas.width=window.innerWidth;lh=letterCanvas.height=window.innerHeight;
+                particles=[];for(let i=0;i<particleCount;i++){particles.push(new Particle(Math.random()*lw,Math.random()*lh,characters[Math.floor(Math.random()*characters.length)],Math.random()*2+1));}}
+            function drawRain(){
+                letterCtx.fillStyle='rgba(236,238,223,1)';letterCtx.fillRect(0,0,lw,lh);
+                letterCtx.fillStyle='#44444E';letterCtx.font=fontSize+'px Inter';
+                for(let i=0;i<particles.length;i++){let p=particles[i];letterCtx.fillText(p.char,p.x,p.y);p.y+=p.speed;if(p.y>lh){p.y=0;p.x=Math.random()*lw;p.char=characters[Math.floor(Math.random()*characters.length)];p.speed=Math.random()*2+1;}}}
+            window.addEventListener('resize',initializeRain);initializeRain();setInterval(drawRain,45);
 
             // --- Scroll Animations ---
-            const heroSection = document.getElementById('hero');
-            const devicesSection = document.getElementById('devices');
-            
-            window.addEventListener('scroll', () => {
-                const scrollY = window.scrollY;
-                const heroHeight = heroSection.offsetHeight;
-
-                if (scrollY < heroHeight) {
-                    const progress = scrollY / (heroHeight * 0.8);
-                    heroSection.style.opacity = 1 - progress;
-                    heroSection.style.transform = `scale(${1 - progress * 0.1})`;
-                    devicesSection.style.transform = `scale(${0.7 + progress * 0.3})`;
-                } else {
-                    heroSection.style.opacity = 0;
-                    devicesSection.style.transform = 'scale(1)';
-                }
-            });
-            
-            // --- General element animation observer ---
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -862,62 +584,61 @@
                     }
                 });
             }, {
-                threshold: 0.1
+                threshold: 0.5 // Trigger when 50% of the section is visible
             });
+            
+            document.querySelectorAll('section').forEach(el => observer.observe(el));
+            
+            const scrollIndicator = document.querySelector('.scroll-indicator');
+            const mainContainer = document.querySelector('main');
+            let lastScrollTop = 0;
+            const header = document.querySelector('header');
 
-            document.querySelectorAll('.scroll-animate').forEach(el => observer.observe(el));
-            observer.observe(devicesSection);
+            mainContainer.addEventListener('scroll', () => {
+                let scrollTop = mainContainer.scrollTop;
 
+                // Auto-hide header logic
+                if (scrollTop > lastScrollTop && scrollTop > 100) { 
+                    header.classList.add('header-hidden');
+                } else { 
+                    header.classList.remove('header-hidden');
+                }
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+
+                // Scroll indicator logic
+                if(scrollIndicator) {
+                    if (scrollTop > 50) {
+                        scrollIndicator.style.opacity = '0';
+                    } else {
+                        scrollIndicator.style.opacity = '1';
+                    }
+                }
+            });
 
             // --- Feature Card Click to Zoom ---
             const featureCards = document.querySelectorAll('.feature-card');
-
-            featureCards.forEach(card => {
-                card.addEventListener('click', (event) => {
-                    event.stopPropagation();
-                    const isAlreadyClicked = card.classList.contains('clicked');
-                    featureCards.forEach(c => c.classList.remove('clicked'));
-                    if (!isAlreadyClicked) {
-                        card.classList.add('clicked');
-                    }
-                });
-            });
-
-            document.addEventListener('click', () => {
-                featureCards.forEach(c => c.classList.remove('clicked'));
-            });
+            featureCards.forEach(card=>{card.addEventListener('click',event=>{event.stopPropagation();const isAlreadyClicked=card.classList.contains('clicked');featureCards.forEach(c=>c.classList.remove('clicked'));if(!isAlreadyClicked){card.classList.add('clicked');}});});
+            document.addEventListener('click',()=>{featureCards.forEach(c=>c.classList.remove('clicked'));});
 
             // --- Side Panel Logic ---
             const openBtn = document.getElementById('open-panel-btn');
             const closeBtn = document.getElementById('close-panel-btn');
             const sidePanel = document.getElementById('side-panel');
             const overlay = document.getElementById('page-overlay');
-            const panelLinks = document.querySelectorAll('.side-panel-link');
             const body = document.body;
+            function openPanel(){sidePanel.classList.add('active');overlay.classList.add('active');body.classList.add('side-panel-open');}
+            function closePanel(){sidePanel.classList.remove('active');overlay.classList.remove('active');body.classList.remove('side-panel-open');}
+            openBtn.addEventListener('click',openPanel);
+            closeBtn.addEventListener('click',closePanel);
+            overlay.addEventListener('click',closePanel);
 
-            function openPanel() {
-                sidePanel.classList.add('active');
-                overlay.classList.add('active');
-                body.classList.add('side-panel-open');
-            }
-
-            function closePanel() {
-                sidePanel.classList.remove('active');
-                overlay.classList.remove('active');
-                body.classList.remove('side-panel-open');
-            }
-
-            openBtn.addEventListener('click', openPanel);
-            closeBtn.addEventListener('click', closePanel);
-            overlay.addEventListener('click', closePanel);
-            panelLinks.forEach(link => {
-                link.addEventListener('click', closePanel);
+            document.querySelectorAll('#main-nav a, #side-nav a').forEach(link => {
+                link.addEventListener('click', (e) => {
+                   closePanel(); 
+                });
             });
-
         });
     </script>
 </body>
 </html>
-
-
 
