@@ -203,37 +203,41 @@
             box-shadow: 0 0 0 3px rgba(113, 90, 90, 0.3);
         }
         
-        /* --- Horizontal Scroll Container --- */
+        /* --- Features Section Horizontal Scroll --- */
         @keyframes scroll-horizontal {
             from { transform: translateX(0); }
             to { transform: translateX(-50%); }
         }
         
-        .scrolling-container {
+        .features-container {
             overflow: hidden;
             width: 100%;
             -webkit-mask-image: linear-gradient(to right, transparent, white 10%, white 90%, transparent);
             mask-image: linear-gradient(to right, transparent, white 10%, white 90%, transparent);
         }
 
-        .scrolling-grid {
+        .features-grid {
             display: flex;
             width: max-content;
         }
         
-        section.in-view .scrolling-grid {
+        section.in-view .features-grid {
              animation: scroll-horizontal 40s linear infinite;
         }
 
-        .scrolling-container:hover .scrolling-grid {
+        .features-container:hover .features-grid {
             animation-play-state: paused;
         }
 
-        .testimonial-card {
+        .feature-card {
             flex-shrink: 0;
-            width: 450px;
+            width: 380px;
             margin: 0 1rem;
+            cursor: pointer;
         }
+        
+        .feature-card.clicked { transform: scale(1.1); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.15); }
+        .feature-card.clicked:hover { transform: scale(1.1); }
         
         /* --- Hero Graphics --- */
         #hero-graphics {
@@ -427,13 +431,22 @@
                     <h2 class="scroll-animate text-5xl md:text-6xl font-bold tracking-tight">Manage Your Life, Effortlessly</h2>
                     <p class="scroll-animate delay-1 mt-4 text-xl text-gray-500 max-w-3xl mx-auto">Taskly brings all your notes, tasks, and projects into one beautifully simple space. Focus on what matters.</p>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
-                    <div class="scroll-animate feature-card p-8 rounded-2xl"><div class="text-4xl mb-4">✨</div><h3 class="text-xl font-bold mb-2">Smart Organization</h3><p class="text-gray-600">Automatically categorize your tasks and notes with AI assistance to keep your workspace tidy.</p></div>
-                    <div class="scroll-animate delay-1 feature-card p-8 rounded-2xl"><div class="text-4xl mb-4">🎨</div><h3 class="text-xl font-bold mb-2">Customizable Views</h3><p class="text-gray-600">Switch between list, board, and calendar views to fit your personal workflow and style.</p></div>
-                    <div class="scroll-animate delay-2 feature-card p-8 rounded-2xl"><div class="text-4xl mb-4">🔗</div><h3 class="text-xl font-bold mb-2">Seamless Sync</h3><p class="text-gray-600">Your data is always in sync across all your devices, instantly and reliably.</p></div>
-                    <div class="scroll-animate feature-card p-8 rounded-2xl"><div class="text-4xl mb-4">🤝</div><h3 class="text-xl font-bold mb-2">Collaborate Easily</h3><p class="text-gray-600">Share projects, assign tasks, and leave comments effortlessly with your team.</p></div>
-                    <div class="scroll-animate delay-1 feature-card p-8 rounded-2xl"><div class="text-4xl mb-4">🔒</div><h3 class="text-xl font-bold mb-2">Private & Secure</h3><p class="text-gray-600">With end-to-end encryption, your data is always protected and for your eyes only.</p></div>
-                    <div class="scroll-animate delay-2 feature-card p-8 rounded-2xl"><div class="text-4xl mb-4">🚀</div><h3 class="text-xl font-bold mb-2">Lightning Fast</h3><p class="text-gray-600">Designed for speed. Capture ideas and manage tasks as quickly as they come to you.</p></div>
+                <div class="features-container mt-12">
+                    <div class="features-grid">
+                        <!-- Cards are duplicated for seamless animation loop -->
+                        <div class="feature-card p-8 rounded-2xl"><div class="text-4xl mb-4">✨</div><h3 class="text-xl font-bold mb-2">Smart Organization</h3><p class="text-gray-600">Automatically categorize your tasks and notes with AI assistance to keep your workspace tidy.</p></div>
+                        <div class="feature-card p-8 rounded-2xl"><div class="text-4xl mb-4">🎨</div><h3 class="text-xl font-bold mb-2">Customizable Views</h3><p class="text-gray-600">Switch between list, board, and calendar views to fit your personal workflow and style.</p></div>
+                        <div class="feature-card p-8 rounded-2xl"><div class="text-4xl mb-4">🔗</div><h3 class="text-xl font-bold mb-2">Seamless Sync</h3><p class="text-gray-600">Your data is always in sync across all your devices, instantly and reliably.</p></div>
+                        <div class="feature-card p-8 rounded-2xl"><div class="text-4xl mb-4">🤝</div><h3 class="text-xl font-bold mb-2">Collaborate Easily</h3><p class="text-gray-600">Share projects, assign tasks, and leave comments effortlessly with your team.</p></div>
+                        <div class="feature-card p-8 rounded-2xl"><div class="text-4xl mb-4">🔒</div><h3 class="text-xl font-bold mb-2">Private & Secure</h3><p class="text-gray-600">With end-to-end encryption, your data is always protected and for your eyes only.</p></div>
+                        <div class="feature-card p-8 rounded-2xl"><div class="text-4xl mb-4">🚀</div><h3 class="text-xl font-bold mb-2">Lightning Fast</h3><p class="text-gray-600">Designed for speed. Capture ideas and manage tasks as quickly as they come to you.</p></div>
+                        <div class="feature-card p-8 rounded-2xl"><div class="text-4xl mb-4">✨</div><h3 class="text-xl font-bold mb-2">Smart Organization</h3><p class="text-gray-600">Automatically categorize your tasks and notes with AI assistance to keep your workspace tidy.</p></div>
+                        <div class="feature-card p-8 rounded-2xl"><div class="text-4xl mb-4">🎨</div><h3 class="text-xl font-bold mb-2">Customizable Views</h3><p class="text-gray-600">Switch between list, board, and calendar views to fit your personal workflow and style.</p></div>
+                        <div class="feature-card p-8 rounded-2xl"><div class="text-4xl mb-4">🔗</div><h3 class="text-xl font-bold mb-2">Seamless Sync</h3><p class="text-gray-600">Your data is always in sync across all your devices, instantly and reliably.</p></div>
+                        <div class="feature-card p-8 rounded-2xl"><div class="text-4xl mb-4">🤝</div><h3 class="text-xl font-bold mb-2">Collaborate Easily</h3><p class="text-gray-600">Share projects, assign tasks, and leave comments effortlessly with your team.</p></div>
+                        <div class="feature-card p-8 rounded-2xl"><div class="text-4xl mb-4">🔒</div><h3 class="text-xl font-bold mb-2">Private & Secure</h3><p class="text-gray-600">With end-to-end encryption, your data is always protected and for your eyes only.</p></div>
+                        <div class="feature-card p-8 rounded-2xl"><div class="text-4xl mb-4">🚀</div><h3 class="text-xl font-bold mb-2">Lightning Fast</h3><p class="text-gray-600">Designed for speed. Capture ideas and manage tasks as quickly as they come to you.</p></div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -450,18 +463,12 @@
         </section>
 
         <section id="testimonials">
-            <div class="section-content w-full">
+            <div class="section-content">
                 <div class="text-center"><h2 class="scroll-animate text-5xl font-bold tracking-tight">Loved by Teams Everywhere</h2><p class="scroll-animate delay-1 mt-4 text-xl text-gray-500">Don't just take our word for it. Here's what others have to say.</p></div>
-                <div class="scrolling-container mt-12">
-                    <div class="scrolling-grid">
-                        <!-- Duplicated for seamless scroll -->
-                        <div class="testimonial-card rounded-2xl p-10"><p class="text-lg text-gray-700">"Taskly has revolutionized our workflow. The interface is so intuitive and clean. We're getting more done than ever before."</p><div class="mt-4 font-bold">- Sarah L., Project Manager</div></div>
-                        <div class="testimonial-card rounded-2xl p-10"><p class="text-lg text-gray-700">"The seamless sync between my phone and laptop is a game-changer. I can capture an idea on the go and find it on my desktop instantly."</p><div class="mt-4 font-bold">- Mike R., Freelance Designer</div></div>
-                        <div class="testimonial-card rounded-2xl p-10"><p class="text-lg text-gray-700">"Finally, a task manager that doesn't feel like a chore to use. It's beautiful, fast, and has all the features we need without the clutter."</p><div class="mt-4 font-bold">- Emily C., CEO of a Startup</div></div>
-                        <div class="testimonial-card rounded-2xl p-10"><p class="text-lg text-gray-700">"Taskly has revolutionized our workflow. The interface is so intuitive and clean. We're getting more done than ever before."</p><div class="mt-4 font-bold">- Sarah L., Project Manager</div></div>
-                        <div class="testimonial-card rounded-2xl p-10"><p class="text-lg text-gray-700">"The seamless sync between my phone and laptop is a game-changer. I can capture an idea on the go and find it on my desktop instantly."</p><div class="mt-4 font-bold">- Mike R., Freelance Designer</div></div>
-                        <div class="testimonial-card rounded-2xl p-10"><p class="text-lg text-gray-700">"Finally, a task manager that doesn't feel like a chore to use. It's beautiful, fast, and has all the features we need without the clutter."</p><div class="mt-4 font-bold">- Emily C., CEO of a Startup</div></div>
-                    </div>
+                <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mt-12">
+                    <div class="scroll-animate testimonial-card rounded-2xl p-10"><p class="text-lg text-gray-700">"Taskly has revolutionized our workflow. The interface is so intuitive and clean. We're getting more done than ever before."</p><div class="mt-4 font-bold">- Sarah L., Project Manager</div></div>
+                     <div class="scroll-animate delay-1 testimonial-card rounded-2xl p-10"><p class="text-lg text-gray-700">"The seamless sync between my phone and laptop is a game-changer. I can capture an idea on the go and find it on my desktop instantly."</p><div class="mt-4 font-bold">- Mike R., Freelance Designer</div></div>
+                     <div class="scroll-animate delay-2 testimonial-card rounded-2xl p-10"><p class="text-lg text-gray-700">"Finally, a task manager that doesn't feel like a chore to use. It's beautiful, fast, and has all the features we need without the clutter."</p><div class="mt-4 font-bold">- Emily C., CEO of a Startup</div></div>
                 </div>
             </div>
         </section>
