@@ -310,66 +310,6 @@
             0% { opacity: 1; transform: translate(-50%, 0); }
             100% { opacity: 0; transform: translate(-50%, 20px); }
         }
-        
-        /* --- Responsive Styles for Mobile --- */
-        @media (max-width: 768px) {
-            html, body {
-                height: auto;
-                overflow: auto; /* Re-enable body scrolling */
-            }
-
-            main {
-                height: auto;
-                overflow: visible;
-                scroll-snap-type: none; /* Disable snap scrolling on mobile for a more natural feel */
-            }
-
-            section {
-                height: auto;
-                min-height: 100vh;
-                padding: 6rem 20px;
-            }
-
-            #hero h1 {
-                font-size: 3.5rem; /* 56px */
-            }
-            #hero p {
-                font-size: 1.125rem; /* 18px */
-            }
-            .section-content h2 {
-                font-size: 2.5rem; /* 40px */
-            }
-            
-            #devices .flex-wrap {
-                flex-direction: column;
-                gap: 2rem;
-                margin-top: 3rem;
-            }
-            
-            #mobile-mockup, #desktop-mockup {
-                transform: translate(0,0) rotate(0);
-                max-width: 100%;
-            }
-
-            #features .grid, #why-us .grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-                margin-top: 3rem;
-            }
-            
-            .scrolling-container {
-                -webkit-mask-image: none;
-                mask-image: none;
-            }
-
-            .testimonial-card {
-                width: 80vw;
-            }
-            
-            #enquire {
-                 min-height: auto;
-            }
-        }
     </style>
 </head>
 <body class="antialiased">
