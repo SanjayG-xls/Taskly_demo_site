@@ -5,31 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Taskly - Productivity that feels like play</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Poppins:wght@700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     <style>
         :root {
-            --bg-light: #ECEEDF;
-            --text-dark: #37353E;
-            --text-medium: #44444E;
-            --accent-brown: #CFAB8D;
-            --card-color-1-rgb: 187, 220, 229;
-            --card-color-2-rgb: 217, 196, 176;
-            --card-color-3-rgb: 255, 255, 255;
+            --primary-color: #1A237E; /* Indigo 900 */
+            --accent-color: #FF6F00;   /* Deep Amber */
+            --secondary-accent: #26C6DA; /* Teal */
+            --background-color: #FAFAFA;/* Soft Off-White */
+            --text-color: #212121;      /* Dark Gray */
+            --heading-font: 'Poppins', sans-serif;
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-light);
-            color: var(--text-dark);
+            background-color: var(--background-color);
+            color: var(--text-color);
             margin: 0;
+        }
+
+        h1, h2, h3, h4, h5, h6, .font-poppins {
+            font-family: var(--heading-font);
         }
 
         body.side-panel-open {
             overflow: hidden;
         }
         
-        /* The main container needs a height of 100vh * number of slides */
         .main-container {
             height: 800vh; 
         }
@@ -43,19 +47,23 @@
             align-items: center;
             justify-content: center;
             width: 100%;
-            overflow: hidden; /* Prevents content overflow issues */
+            overflow: hidden;
+            transition: background 0.5s ease-in-out;
         }
 
         header {
-            transition: box-shadow 0.3s ease-in-out, background-color 0.3s ease-in-out, backdrop-filter 0.3s ease-in-out;
+            transition: box-shadow 0.3s ease-in-out, background-color 0.3s ease-in-out, backdrop-filter 0.3s ease-in-out, transform 0.3s ease-in-out;
         }
         
         .header-scrolled {
-            background-color: rgba(255, 255, 255, 0.6);
+            background-color: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px); /* For Safari support */
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-hidden {
+            transform: translateY(-100%);
         }
         
         .cta-button {
@@ -63,6 +71,8 @@
             overflow: hidden;
             transition: all 0.3s ease-in-out;
             z-index: 1;
+            background-color: var(--accent-color);
+            box-shadow: 0 10px 20px -5px rgba(255, 111, 0, 0.4);
         }
 
         .cta-button::before {
@@ -86,32 +96,21 @@
         
         .cta-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 25px rgba(255, 111, 0, 0.5);
         }
         
         .testimonial-card, .why-us-card, .faq-item, .feature-card {
-            backdrop-filter: blur(10px);
-            border: 1px solid transparent;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-        }
-        
-        .feature-card:nth-of-type(3n+1), .why-us-card:nth-of-type(3n+1), .testimonial-card:nth-of-type(3n+1), .faq-item:nth-of-type(4n+1) {
-             background: rgba(var(--card-color-1-rgb), 0.6);
-        }
-        .feature-card:nth-of-type(3n+2), .why-us-card:nth-of-type(3n+2), .testimonial-card:nth-of-type(3n+2), .faq-item:nth-of-type(4n+2) {
-             background: rgba(var(--card-color-2-rgb), 0.6);
-        }
-        .feature-card:nth-of-type(3n), .why-us-card:nth-of-type(3n), .testimonial-card:nth-of-type(3n), .faq-item:nth-of-type(4n+3) {
-             background: rgba(var(--card-color-3-rgb), 0.6);
-        }
-        .faq-item:nth-of-type(4n) {
-             background: rgba(var(--card-color-1-rgb), 0.6);
         }
 
         .testimonial-card:hover, .why-us-card:hover, .feature-card:hover {
             transform: translateY(-8px) scale(1.02);
             box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
-            border-color: var(--accent-brown);
+            border-color: var(--accent-color);
         }
         
         .faq-item summary {
@@ -120,7 +119,7 @@
         }
         
         .faq-item[open] summary {
-            color: var(--text-dark);
+            color: var(--primary-color);
         }
         
         .faq-item summary::-webkit-details-marker {
@@ -139,15 +138,15 @@
             width: 100%;
             padding: 12px 20px;
             border-radius: 8px;
-            border: 1px solid #C1C6C5;
+            border: 1px solid #E0E0E0;
             background-color: rgba(255,255,255,0.8);
-            color: var(--text-dark);
+            color: var(--text-color);
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
         .form-input:focus {
             outline: none;
-            border-color: var(--accent-brown);
-            box-shadow: 0 0 0 3px rgba(207, 171, 141, 0.4);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(255, 111, 0, 0.3);
         }
 
         #page-overlay {
@@ -175,7 +174,7 @@
             width: 320px;
             max-width: 90vw;
             height: 100%;
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(250, 250, 250, 0.85);
             backdrop-filter: blur(20px);
             z-index: 100;
             transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
@@ -194,12 +193,12 @@
             padding: 0.5rem 1rem;
             border-radius: 0.5rem;
             transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
-            color: var(--text-medium);
+            color: #424242;
         }
 
         .side-panel-link:hover {
-            background-color: var(--bg-light);
-            color: var(--text-dark);
+            background-color: #FFF3E0; /* Light Amber */
+            color: var(--accent-color);
             transform: translateX(5px);
         }
     </style>
@@ -208,18 +207,18 @@
 
     <header id="main-header" class="fixed top-0 left-0 right-0 z-50 p-6 flex justify-between items-center bg-transparent">
         <div>
-            <div class="text-2xl font-bold tracking-wider" style="color: var(--text-dark);">
+            <div class="text-2xl font-bold tracking-wider font-poppins" style="color: var(--primary-color);">
                 Taskly
             </div>
         </div>
         <div class="flex items-center space-x-8">
-            <nav class="hidden md:flex space-x-8 text-gray-600">
+            <nav class="hidden md:flex space-x-8 text-gray-700 font-medium">
                 <a href="#features" class="hover:text-black transition-colors">Features</a>
                 <a href="#why-us" class="hover:text-black transition-colors">Why Us</a>
                 <a href="#testimonials" class="hover:text-black transition-colors">Testimonials</a>
                 <a href="#enquire" class="hover:text-black transition-colors">Enquire</a>
             </nav>
-            <button id="open-panel-btn" class="font-black text-2xl py-2 px-4 rounded-lg transition-transform hover:scale-105" style="color: var(--text-dark);">
+            <button id="open-panel-btn" class="font-black text-2xl py-2 px-4 rounded-lg transition-transform hover:scale-105" style="color: var(--primary-color);">
                 ☰
             </button>
         </div>
@@ -243,28 +242,28 @@
             <a href="#enquire" class="side-panel-link">Contact</a>
         </nav>
         <div class="mt-auto text-center">
-            <h3 class="text-xl font-bold text-gray-800">Taskly</h3>
+            <h3 class="text-xl font-bold font-poppins" style="color: var(--primary-color);">Taskly</h3>
             <p class="text-xs text-gray-500">Productivity that feels like play</p>
         </div>
     </aside>
 
     <div class="relative main-container">
         <!-- Slide 1: Hero -->
-        <div id="hero" class="slide bg-gradient-to-b from-gray-100 to-gray-200">
-             <h1 class="text-7xl md:text-9xl font-black tracking-tight mb-4 text-transparent bg-clip-text bg-gradient-to-br from-[#44444E] to-[#37353E]" data-aos="fade-up">
-                Taskly
+        <div id="hero" class="slide" style="background: linear-gradient(to right, #FAFAFA 0%, #E8EAF6 100%);">
+             <h1 class="text-7xl md:text-9xl font-black tracking-tighter mb-4 text-transparent bg-clip-text bg-gradient-to-br from-[#1A237E] to-[#303F9F]" data-aos="fade-up">
+                 Taskly
             </h1>
-            <p class="text-2xl md:text-3xl mb-8 max-w-2xl px-4 text-center" style="color: #44444E;" data-aos="fade-up" data-aos-delay="100">
+            <p class="text-2xl md:text-3xl mb-8 max-w-2xl px-4 text-center" style="color: var(--text-color);" data-aos="fade-up" data-aos-delay="100">
                 Productivity that feels like play
             </p>
             <div data-aos="fade-up" data-aos-delay="200">
-                <button class="cta-button text-xl font-semibold text-white py-4 px-10 rounded-full shadow-lg" style="background-color: var(--text-dark); box-shadow: 0 10px 20px -5px rgba(55, 65, 81, 0.3);">
+                <button class="cta-button text-xl font-semibold text-white py-4 px-10 rounded-full">
                     Join the Waitlist
                 </button>
             </div>
         </div>
         <!-- Slide 2: Devices -->
-        <div id="devices" class="slide bg-gradient-to-b from-slate-200 to-slate-300">
+        <div id="devices" class="slide" style="background: linear-gradient(to bottom, #E8EAF6 0%, #E1F5FE 100%);">
             <div class="flex flex-col md:flex-row items-center justify-center gap-12 px-4">
                 <div data-aos="fade-right" class="rounded-2xl p-3 shadow-2xl border-4 border-gray-700 bg-gray-800 w-full max-w-sm">
                     <div class="bg-white rounded-lg p-6 space-y-4">
@@ -278,10 +277,10 @@
             </div>
         </div>
         <!-- Slide 3: Features -->
-        <div id="features" class="slide bg-gradient-to-b from-cyan-100 to-blue-200">
+        <div id="features" class="slide" style="background: linear-gradient(to right, #E1F5FE 0%, #E0F7FA 100%);">
             <div class="w-full max-w-7xl mx-auto text-center px-4">
-                <h2 class="text-4xl md:text-5xl font-bold tracking-tight" data-aos="fade-up">Manage Your Life, Effortlessly</h2>
-                <p class="mt-4 text-lg text-gray-500 max-w-3xl mx-auto" data-aos="fade-up" data-aos-delay="100">Taskly brings all your notes, tasks, and projects into one beautifully simple space. Focus on what matters.</p>
+                <h2 class="text-4xl md:text-5xl font-bold tracking-tight" data-aos="fade-up" style="color:var(--primary-color)">Manage Your Life, Effortlessly</h2>
+                <p class="mt-4 text-lg text-gray-700 max-w-3xl mx-auto" data-aos="fade-up" data-aos-delay="100">Taskly brings all your notes, tasks, and projects into one beautifully simple space. Focus on what matters.</p>
                 <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 justify-center gap-6 lg:gap-8 w-full" data-aos="fade-up" data-aos-delay="200">
                     <div class="feature-card p-8 rounded-2xl text-center">
                         <div class="text-5xl mb-4">🧠</div>
@@ -317,10 +316,10 @@
             </div>
         </div>
         <!-- Slide 4: Why Us -->
-        <div id="why-us" class="slide bg-gradient-to-b from-blue-200 to-indigo-300 text-gray-800">
+        <div id="why-us" class="slide" style="background: linear-gradient(to right, #E0F7FA 0%, #E8EAF6 100%);">
             <div class="max-w-7xl mx-auto px-4 text-center">
-                <h2 class="text-4xl md:text-5xl font-bold tracking-tight" data-aos="fade-up">Why Taskly is Different</h2>
-                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto" data-aos="fade-up" data-aos-delay="100">We focus on simplicity, power, and a delightful user experience.</p>
+                <h2 class="text-4xl md:text-5xl font-bold tracking-tight" data-aos="fade-up" style="color:var(--primary-color)">Why Taskly is Different</h2>
+                <p class="mt-4 text-lg text-gray-700 max-w-3xl mx-auto" data-aos="fade-up" data-aos-delay="100">We focus on simplicity, power, and a delightful user experience.</p>
                 <div class="mt-20 grid gap-10 md:grid-cols-3">
                     <div class="why-us-card p-8 rounded-2xl" data-aos="fade-up" data-aos-delay="200"><h3 class="text-xl font-bold mb-3">Uncluttered by Design</h3><p class="text-gray-600">Robust features without the confusing interface. Focus on your work, not on learning a tool.</p></div>
                     <div class="why-us-card p-8 rounded-2xl" data-aos="fade-up" data-aos-delay="300"><h3 class="text-xl font-bold mb-3">Built for Collaboration</h3><p class="text-gray-600">From shared boards to real-time comments, teamwork is seamless anywhere in the world.</p></div>
@@ -329,58 +328,58 @@
             </div>
         </div>
         <!-- Slide 5: Testimonials -->
-        <div id="testimonials" class="slide bg-gradient-to-b from-indigo-300 to-purple-400 text-white">
+        <div id="testimonials" class="slide" style="background: linear-gradient(to right, #E8EAF6 0%, #FFF3E0 100%);">
             <div class="max-w-7xl mx-auto px-4 text-center">
-                <h2 class="text-4xl font-bold tracking-tight" data-aos="fade-up">Loved by Teams Everywhere</h2>
-                <p class="mt-4 text-lg opacity-80" data-aos="fade-up" data-aos-delay="100">Don't just take our word for it. Here's what others have to say.</p>
+                <h2 class="text-4xl font-bold tracking-tight" data-aos="fade-up" style="color:var(--primary-color)">Loved by Teams Everywhere</h2>
+                <p class="mt-4 text-lg text-gray-700" data-aos="fade-up" data-aos-delay="100">Don't just take our word for it. Here's what others have to say.</p>
                 <div class="mt-16 grid gap-8 md:grid-cols-3">
-                    <div class="testimonial-card rounded-2xl p-8" data-aos="fade-up" data-aos-delay="200"><p class="text-white/90">"Taskly has revolutionized our workflow. The interface is so intuitive and clean."</p><div class="mt-4 font-bold">- Sarah L., Project Manager</div></div>
-                    <div class="testimonial-card rounded-2xl p-8" data-aos="fade-up" data-aos-delay="300"><p class="text-white/90">"The seamless sync between my phone and laptop is a game-changer."</p><div class="mt-4 font-bold">- Mike R., Freelance Designer</div></div>
-                    <div class="testimonial-card rounded-2xl p-8" data-aos="fade-up" data-aos-delay="400"><p class="text-white/90">"Finally, a task manager that doesn't feel like a chore to use. It's beautiful and fast."</p><div class="mt-4 font-bold">- Emily C., CEO of a Startup</div></div>
+                    <div class="testimonial-card rounded-2xl p-8" data-aos="fade-up" data-aos-delay="200"><p class="text-gray-700">"Taskly has revolutionized our workflow. The interface is so intuitive and clean."</p><div class="mt-4 font-bold text-gray-800">- Sarah L., Project Manager</div></div>
+                    <div class="testimonial-card rounded-2xl p-8" data-aos="fade-up" data-aos-delay="300"><p class="text-gray-700">"The seamless sync between my phone and laptop is a game-changer."</p><div class="mt-4 font-bold text-gray-800">- Mike R., Freelance Designer</div></div>
+                    <div class="testimonial-card rounded-2xl p-8" data-aos="fade-up" data-aos-delay="400"><p class="text-gray-700">"Finally, a task manager that doesn't feel like a chore to use. It's beautiful and fast."</p><div class="mt-4 font-bold text-gray-800">- Emily C., CEO of a Startup</div></div>
                 </div>
             </div>
         </div>
         <!-- Slide 6: CTA -->
-        <div id="request-demo" class="slide bg-gradient-to-b from-purple-400 to-pink-400 text-white">
+        <div id="request-demo" class="slide" style="background: linear-gradient(to right, #FFF3E0 0%, #FFECB3 100%);">
             <div class="max-w-4xl mx-auto text-center px-4">
-                <h2 class="text-5xl font-bold tracking-tight" data-aos="fade-up">Ready to See It in Action?</h2>
-                <p class="mt-4 text-xl opacity-80 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">Request a personalized demo to see how Taskly can transform your team's productivity.</p>
-                <div class="mt-8" data-aos="fade-up" data-aos-delay="200"><button class="cta-button text-xl font-semibold text-white py-4 px-10 rounded-full shadow-lg" style="background-color: var(--text-dark); box-shadow: 0 10px 20px -5px rgba(55, 65, 81, 0.3);">Request a Demo</button></div>
+                <h2 class="text-5xl font-bold tracking-tight" data-aos="fade-up" style="color:var(--primary-color)">Ready to See It in Action?</h2>
+                <p class="mt-4 text-xl text-gray-700 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">Request a personalized demo to see how Taskly can transform your team's productivity.</p>
+                <div class="mt-8" data-aos="fade-up" data-aos-delay="200"><button class="cta-button text-xl font-semibold text-white py-4 px-10 rounded-full">Request a Demo</button></div>
             </div>
         </div>
         <!-- Slide 7: Enquire -->
-        <div id="enquire" class="slide bg-gradient-to-b from-pink-300 to-rose-300">
+        <div id="enquire" class="slide" style="background: linear-gradient(to bottom, #FFECB3 0%, #FAFAFA 100%);">
             <div class="max-w-4xl mx-auto w-full px-4 text-center">
-                <h2 class="text-4xl font-bold tracking-tight" data-aos="fade-up">Have a Question?</h2>
+                <h2 class="text-4xl font-bold tracking-tight" data-aos="fade-up" style="color:var(--primary-color)">Have a Question?</h2>
                 <p class="mt-4 text-lg text-gray-700 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">We're here to help. Fill out the form and we'll get back to you.</p>
                 <form class="mt-12 max-w-xl mx-auto space-y-6" data-aos="fade-up" data-aos-delay="200">
                     <div><input type="text" placeholder="Your Name" class="form-input"></div>
                     <div><input type="email" placeholder="Your Email" class="form-input"></div>
                     <div><textarea rows="4" placeholder="Your Message" class="form-input"></textarea></div>
-                    <div class="text-center"><button type="submit" class="cta-button text-lg font-semibold text-white py-3 px-8 rounded-full shadow-lg" style="background-color: var(--accent-brown); box-shadow: 0 10px 20px -5px rgba(207, 171, 141, 0.4);">Send Message</button></div>
+                    <div class="text-center"><button type="submit" class="cta-button text-lg font-semibold text-white py-3 px-8 rounded-full">Send Message</button></div>
                 </form>
             </div>
         </div>
         <!-- Slide 8: FAQ & Footer -->
-        <div id="faq" class="slide bg-gradient-to-b from-stone-100 to-stone-50 !block">
+        <div id="faq" class="slide !block" style="background: linear-gradient(to bottom, #FAFAFA 0%, #F5F5F5 100%);">
             <div class="max-w-7xl mx-auto h-full flex flex-col justify-center px-4 sm:px-6 lg:px-8">
                 <div class="flex-grow flex flex-col justify-center items-center text-center pt-24">
-                    <h2 class="text-4xl font-bold tracking-tight" data-aos="fade-up">Frequently Asked Questions</h2>
+                    <h2 class="text-4xl font-bold tracking-tight" data-aos="fade-up" style="color:var(--primary-color)">Frequently Asked Questions</h2>
                     <div class="mt-12 space-y-4 max-w-2xl w-full mx-auto text-left" data-aos="fade-up" data-aos-delay="100">
                         <details class="faq-item p-6 rounded-2xl"><summary class="font-semibold text-lg flex justify-between items-center">Is my data safe with Taskly?<span class="text-2xl icon">+</span></summary><p class="mt-4 text-gray-600">Absolutely. We use end-to-end encryption for all your data. This means only you can access your tasks and notes.</p></details>
                         <details class="faq-item p-6 rounded-2xl"><summary class="font-semibold text-lg flex justify-between items-center">Can I use Taskly with my team?<span class="text-2xl icon">+</span></summary><p class="mt-4 text-gray-600">Yes! Taskly is built for collaboration. You can create shared projects, assign tasks, and see real-time updates.</p></details>
                         <details class="faq-item p-6 rounded-2xl"><summary class="font-semibold text-lg flex justify-between items-center">When will Taskly be available?<span class="text-2xl icon">+</span></summary><p class="mt-4 text-gray-600">We are working hard on Taskly. Join the waitlist to get notified as soon as we launch and to get early access!</p></details>
                     </div>
                 </div>
-                <footer class="py-8 text-gray-600 border-t border-gray-500/20">
+                <footer class="py-8 text-gray-700 border-t border-gray-200">
                     <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
                         <div class="col-span-2 md:col-span-4 lg:col-span-1">
-                            <h2 class="text-2xl font-bold text-gray-800">Taskly</h2>
+                            <h2 class="text-2xl font-bold font-poppins" style="color:var(--primary-color)">Taskly</h2>
                             <p class="mt-1 text-xs text-gray-500">Productivity that feels like play</p>
                             <p class="mt-2 text-sm">&copy; 2025 Taskly Inc. All rights reserved.</p>
                         </div>
                         <div>
-                            <h3 class="font-semibold text-gray-800 tracking-wider uppercase">Company</h3>
+                            <h3 class="font-semibold tracking-wider uppercase" style="color:var(--primary-color)">Company</h3>
                             <ul class="mt-4 space-y-2">
                                 <li><a href="#" class="hover:text-black">About Us</a></li>
                                 <li><a href="#" class="hover:text-black">Our Team</a></li>
@@ -388,7 +387,7 @@
                             </ul>
                         </div>
                          <div>
-                            <h3 class="font-semibold text-gray-800 tracking-wider uppercase">Product</h3>
+                            <h3 class="font-semibold tracking-wider uppercase" style="color:var(--primary-color)">Product</h3>
                             <ul class="mt-4 space-y-2">
                                 <li><a href="#features" class="hover:text-black">Features</a></li>
                                 <li><a href="#" class="hover:text-black">Pricing</a></li>
@@ -396,14 +395,14 @@
                             </ul>
                         </div>
                          <div>
-                            <h3 class="font-semibold text-gray-800 tracking-wider uppercase">Community</h3>
+                            <h3 class="font-semibold tracking-wider uppercase" style="color:var(--primary-color)">Community</h3>
                             <ul class="mt-4 space-y-2">
                                 <li><a href="#" class="hover:text-black">Join Our Community</a></li>
                                 <li><a href="#" class="hover:text-black">Blog</a></li>
                             </ul>
                         </div>
                         <div class="col-span-2 md:col-span-1">
-                            <h3 class="font-semibold text-gray-800 tracking-wider uppercase">Social</h3>
+                            <h3 class="font-semibold tracking-wider uppercase" style="color:var(--primary-color)">Social</h3>
                             <div class="flex space-x-4 mt-4">
                                 <a href="#" class="hover:text-black"><span class="sr-only">Instagram</span><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.012-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.048-1.024-.06-1.378-.06-3.808s.012-2.784.06-3.808c.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.08 2.525c.636-.247 1.363-.416 2.427-.465C9.53 2.013 9.884 2 12.315 2zm-1.043 11.232a3.712 3.712 0 117.424 0 3.712 3.712 0 01-7.424 0zm10.402-8.12a1.42 1.42 0 100 2.84 1.42 1.42 0 000-2.84z" clip-rule="evenodd" /></svg></a>
                                 <a href="#" class="hover:text-black"><span class="sr-only">LinkedIn</span><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg></a>
@@ -420,18 +419,35 @@
     <script>
       document.addEventListener('DOMContentLoaded', () => {
           AOS.init({
-            duration: 400,
-            once: false, // Animate elements every time they come into view
+              duration: 400,
+              once: false, // Animate elements every time they come into view
           });
 
           // --- Header Scroll Effect ---
           const header = document.getElementById('main-header');
+          let lastScrollY = window.scrollY;
+          
           window.addEventListener('scroll', () => {
-              if (window.scrollY > 50) {
+              const currentScrollY = window.scrollY;
+
+              // Logic to hide/show header based on scroll direction
+              if (currentScrollY > lastScrollY && currentScrollY > 100) {
+                  // If scrolling down and past the top section, hide the header
+                  header.classList.add('header-hidden');
+              } else {
+                  // If scrolling up or near the top, show the header
+                  header.classList.remove('header-hidden');
+              }
+              
+              // Logic to apply the blurred background effect
+              if (currentScrollY > 50) {
                   header.classList.add('header-scrolled');
               } else {
                   header.classList.remove('header-scrolled');
               }
+
+              // Update the last scroll position
+              lastScrollY = currentScrollY <= 0 ? 0 : currentScrollY;
           });
 
           // --- Side Panel Logic ---
